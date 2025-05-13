@@ -43,7 +43,7 @@ namespace {
 	void Thunk(RE::Script* a_script, RE::ScriptCompiler* a_compiler, RE::COMPILER_NAME a_name, RE::TESObjectREFR* a_targetRef) {
 
 		const std::string Input = a_script->text;
-		logger::info("Entered Console Text: \"{}\"", Input);
+		logger::debug("Entered Console Text: \"{}\"", Input);
 
 		//If true command was handled by the plugin
 		if (OverlaySaver::ConsoleManager::Process(Input)) {

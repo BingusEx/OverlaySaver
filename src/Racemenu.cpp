@@ -1,6 +1,24 @@
 #include "Racemenu.hpp"
 #include "Serialization.hpp"
 
+
+namespace {
+
+	bool ContainsInvariantStr(std::string_view a_Source, std::string_view a_Substr) {
+		if (a_Substr.empty()) {
+			return true;
+		}
+
+		const std::locale& loc = std::locale::classic();
+
+		auto it = std::ranges::search(a_Source, a_Substr, [&loc](char ch1, char ch2) {
+			return std::tolower(ch1, loc) == std::tolower(ch2, loc);
+		}).begin();
+
+		return it != a_Source.end();
+	}
+}
+
 namespace OverlaySaver {
 
 	void Racemenu::Register() {
@@ -29,8 +47,8 @@ namespace OverlaySaver {
 			return;
 		}
 
-		logger::info("SKEE OverlayInterface Version {}", OverlayInterface->GetVersion());
-		logger::info("SKEE OverrideInterface Version {}", OverrideInterface->GetVersion());
+		logger::debug("SKEE OverlayInterface Version {}", OverlayInterface->GetVersion());
+		logger::debug("SKEE OverrideInterface Version {}", OverrideInterface->GetVersion());
 
 	}
 
@@ -78,7 +96,7 @@ namespace OverlaySaver {
 
 		}
 
-		logger::info("Called BodyPart Clear on {} On OvlPart {}", a_Actor->GetDisplayFullName(), a_OvlName);
+		logger::debug("Called BodyPart Clear on {} On OvlPart {}", a_Actor->GetDisplayFullName(), a_OvlName);
 	}
 
 	void Racemenu::OverlayManager::ClearOverlays(RE::Actor* a_Actor) {
@@ -93,7 +111,7 @@ namespace OverlaySaver {
 		ClearBodyPart(a_Actor, iHead, sBody);
 		ClearBodyPart(a_Actor, iHead, sFeet);
 
-		logger::info("Called ClearOverlays on {}", a_Actor->GetDisplayFullName());
+		logger::debug("Called ClearOverlays on {}", a_Actor->GetDisplayFullName());
 
 	}
 
@@ -104,7 +122,7 @@ namespace OverlaySaver {
 		iBody = static_cast<int>(OverlayInterface->GetOverlayCount(SKEE::IOverlayInterface::OverlayType::Normal, SKEE::IOverlayInterface::OverlayLocation::Body));
 		iFeet = static_cast<int>(OverlayInterface->GetOverlayCount(SKEE::IOverlayInterface::OverlayType::Normal, SKEE::IOverlayInterface::OverlayLocation::Feet));
 
-		logger::info("RM Says There are {} Head, {} Hand, {} Body and {} Feet Ovl Slots", iHead, iHand, iBody, iFeet);
+		logger::debug("RM Says There are {} Head, {} Hand, {} Body and {} Feet Ovl Slots", iHead, iHand, iBody, iFeet);
 	}
 
 	void Racemenu::OverlayManager::BuildOvlListForSlot(RE::Actor* a_Actor, int a_NumOfSlots, const std::string& a_OvlName, std::vector<RMOverlay>* a_OvlVec){
@@ -119,7 +137,7 @@ namespace OverlaySaver {
 
 			std::string NodeDataTextureStr = GetNodeOverrideString(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderTexture), 0).c_str();
 
-			if (NodeDataTextureStr.empty()) {
+			if (NodeDataTextureStr.empty() || ContainsInvariantStr(NodeDataTextureStr, R"(\default.dds)")) {
 				continue;
 			}
 
@@ -129,7 +147,7 @@ namespace OverlaySaver {
 			
 		}
 
-		logger::info("Stored {} Ovls For BodyPart {} On Actor {}", a_OvlVec->size(), a_OvlName,a_Actor->GetDisplayFullName());
+		logger::debug("Stored {} Ovls For BodyPart {} On Actor {}", a_OvlVec->size(), a_OvlName,a_Actor->GetDisplayFullName());
 
 	}
 
@@ -157,11 +175,11 @@ namespace OverlaySaver {
 		BuildOvlListForSlot(a_Actor, iBody, sBody, &ActorData->vBody);
 		BuildOvlListForSlot(a_Actor, iFeet, sFeet, &ActorData->vFeet);
 
-		logger::info("GetOverlaysFromRM() Completed on Actor {}", a_Actor->GetDisplayFullName());
-		logger::info("{} Head Overlays Added", ActorData->vHead.size());
-		logger::info("{} Hand Overlays Added", ActorData->vHand.size());
-		logger::info("{} Body Overlays Added", ActorData->vBody.size());
-		logger::info("{} Feet Overlays Added", ActorData->vFeet.size());
+		logger::debug("GetOverlaysFromRM() Completed on Actor {}", a_Actor->GetDisplayFullName());
+		logger::debug("{} Head Overlays Added", ActorData->vHead.size());
+		logger::debug("{} Hand Overlays Added", ActorData->vHand.size());
+		logger::debug("{} Body Overlays Added", ActorData->vBody.size());
+		logger::debug("{} Feet Overlays Added", ActorData->vFeet.size());
 
 	}
 
@@ -169,7 +187,7 @@ namespace OverlaySaver {
 
 
 		if (a_OvlVec->empty()) {
-			logger::info("Vector was empty, Skipping");
+			logger::debug("Vector was empty, Skipping");
 			return;
 		}
 
@@ -197,7 +215,7 @@ namespace OverlaySaver {
 			catch (const std::exception&) {}
 		}
 
-		logger::info("Appied {} Ovls From Persistent Storage to {} on BodyPart {}", a_NumOfSlots, a_Actor->GetDisplayFullName(), a_OvlName);
+		logger::debug("Appied {} Ovls From Persistent Storage to {} on BodyPart {}", NumOfSlots, a_Actor->GetDisplayFullName(), a_OvlName);
 
 	}
 
@@ -219,14 +237,14 @@ namespace OverlaySaver {
 		ApplyStoredOverlayOnBodyPart(a_Actor, iBody, sBody, &ActorData->vBody);
 		ApplyStoredOverlayOnBodyPart(a_Actor, iFeet, sFeet, &ActorData->vFeet);
 
-		logger::info("ApplyOverlayFromList() On Actor {} OK", a_Actor->GetDisplayFullName());
+		logger::debug("ApplyOverlayFromList() On Actor {} OK", a_Actor->GetDisplayFullName());
 
 		if (const auto& Actor3D = a_Actor->GetCurrent3D()) {
 			OverrideInterface->ApplyNodeOverrides(a_Actor, Actor3D, true);
 			a_Actor->Update3DModel();
 		}
 
-		logger::info("GetOverlaysFromRM() Has Run");
+		logger::debug("GetOverlaysFromRM() Has Run");
 
 	}
 
