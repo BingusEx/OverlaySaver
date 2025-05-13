@@ -4,9 +4,9 @@ set (CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE
       STRING "Choose the type of build.")
 	  
 project(
-	TemplatePlugin
+	OverlaySaver
 	VERSION 1.0.0
-	DESCRIPTION "TemplatePlugin"
+	DESCRIPTION "Plugin to work around racemenu overlays disappering on NPC's"
 	LANGUAGES CXX
 )
 

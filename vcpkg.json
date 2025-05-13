@@ -1,7 +1,5 @@
 {
-  "name": "templateplugin",
-  "version-string": "1.0.0",
-  "description": "TemplatePlugin",
+  "name": "overlaysaver",
   "features": {
     "plugin": {
       "description": "Build the SKSE plugin.",
