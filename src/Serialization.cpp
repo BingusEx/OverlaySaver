@@ -24,7 +24,7 @@ namespace OverlaySaver {
 
 			if (const auto Act = TESForm::LookupByID<Actor>(ActorFormID)) {
 				Racemenu::OverlayManager::GetSingleton().BuildOverlayList(Act);
-				logger::debug("Built OvlList for Actor {} Before Save", Act->GetDisplayFullName());
+				logger::info("Built OvlList for Actor {} Before Save", Act->GetDisplayFullName());
 			}
 
 		}
@@ -46,7 +46,7 @@ namespace OverlaySaver {
 		serde->ReadRecordData(&NumOfActorRecords, sizeof(NumOfActorRecords));
 
 		if (NumOfActorRecords <= 0) {
-			logger::debug("No data to load");
+			logger::info("No data to load");
 			return;
 		}
 
@@ -169,7 +169,7 @@ namespace OverlaySaver {
 		const uint32_t NumOfActorRecords = GetSingleton().ActorData.size();
 
 		if (NumOfActorRecords <= 0) {
-			logger::debug("No data to save");
+			logger::info("No data to save");
 		}
 
 		if (!serde->OpenRecord(ActorDataRecord, Version)) {
@@ -196,10 +196,10 @@ namespace OverlaySaver {
 			uint8_t NumOfFeetOvl = Data.vFeet.size();
 			serde->WriteRecordData(&NumOfFeetOvl, sizeof(NumOfFeetOvl));
 
-			logger::debug("NumOfHeadOvl: {}", NumOfHeadOvl);
-			logger::debug("NumOfHandsOvl: {}", NumOfHandsOvl);
-			logger::debug("NumOfBodydOvl: {}", NumOfBodydOvl);
-			logger::debug("NumOfFeetOvl: {}", NumOfFeetOvl);
+			logger::info("NumOfHeadOvl: {}", NumOfHeadOvl);
+			logger::info("NumOfHandsOvl: {}", NumOfHandsOvl);
+			logger::info("NumOfBodydOvl: {}", NumOfBodydOvl);
+			logger::info("NumOfFeetOvl: {}", NumOfFeetOvl);
 
 			//----- Head
 

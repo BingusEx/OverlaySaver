@@ -24,7 +24,7 @@ namespace OverlaySaver {
 		}
 
 		static inline void post_hook() {
-			logger::debug("Installed Load3D hook.");
+			logger::info("Installed Load3D hook.");
 		}
 
 		static inline REL::Relocation<decltype(thunk)> func;

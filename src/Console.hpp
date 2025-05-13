@@ -33,7 +33,7 @@ namespace OverlaySaver {
         }
 
         static void Init() {
-            logger::debug("Loading Default Command List");
+            logger::info("Loading Default Command List");
             RegisterCommand("help", CMD_Help, "Show this list");
             RegisterCommand("register", CMD_Register, "Register the current crosshair actor");
             RegisterCommand("apply", CMD_ReApply, "apply saved ovl data");

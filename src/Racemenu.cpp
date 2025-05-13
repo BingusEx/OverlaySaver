@@ -47,8 +47,8 @@ namespace OverlaySaver {
 			return;
 		}
 
-		logger::debug("SKEE OverlayInterface Version {}", OverlayInterface->GetVersion());
-		logger::debug("SKEE OverrideInterface Version {}", OverrideInterface->GetVersion());
+		logger::info("SKEE OverlayInterface Version {}", OverlayInterface->GetVersion());
+		logger::info("SKEE OverrideInterface Version {}", OverrideInterface->GetVersion());
 
 	}
 
@@ -85,18 +85,21 @@ namespace OverlaySaver {
 
 			std::string NodeName = fmt::format(fmt::runtime(a_OvlName), i);
 
-			Racemenu::OverlayManager::Variant VariantStr("");
-			OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTexture), 0, VariantStr);
+			const bool Fem = static_cast<bool>(a_Actor->GetActorBase()->GetSex());
+			OverrideInterface->RemoveAllNodeOverridesByNode(a_Actor, Fem, NodeName.c_str());
 
-			Racemenu::OverlayManager::Variant VariantF(0.0f);
-			OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderAlpha), 0, VariantF);
+			//Racemenu::OverlayManager::Variant VariantStr("");
+			//OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTexture), 0, VariantStr);
 
-			Racemenu::OverlayManager::Variant VariantI(0);
-			OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTintColor), 0, VariantI);
+			//Racemenu::OverlayManager::Variant VariantF(0.0f);
+			//OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderAlpha), -1, VariantF);
+
+			//Racemenu::OverlayManager::Variant VariantI(0);
+			//OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTintColor), -1, VariantI);
 
 		}
 
-		logger::debug("Called BodyPart Clear on {} On OvlPart {}", a_Actor->GetDisplayFullName(), a_OvlName);
+		logger::info("Called BodyPart Clear on {} On OvlPart {}", a_Actor->GetDisplayFullName(), a_OvlName);
 	}
 
 	void Racemenu::OverlayManager::ClearOverlays(RE::Actor* a_Actor) {
@@ -111,7 +114,7 @@ namespace OverlaySaver {
 		ClearBodyPart(a_Actor, iHead, sBody);
 		ClearBodyPart(a_Actor, iHead, sFeet);
 
-		logger::debug("Called ClearOverlays on {}", a_Actor->GetDisplayFullName());
+		logger::info("Called ClearOverlays on {}", a_Actor->GetDisplayFullName());
 
 	}
 
@@ -122,7 +125,7 @@ namespace OverlaySaver {
 		iBody = static_cast<int>(OverlayInterface->GetOverlayCount(SKEE::IOverlayInterface::OverlayType::Normal, SKEE::IOverlayInterface::OverlayLocation::Body));
 		iFeet = static_cast<int>(OverlayInterface->GetOverlayCount(SKEE::IOverlayInterface::OverlayType::Normal, SKEE::IOverlayInterface::OverlayLocation::Feet));
 
-		logger::debug("RM Says There are {} Head, {} Hand, {} Body and {} Feet Ovl Slots", iHead, iHand, iBody, iFeet);
+		logger::info("RM Says There are {} Head, {} Hand, {} Body and {} Feet Ovl Slots", iHead, iHand, iBody, iFeet);
 	}
 
 	void Racemenu::OverlayManager::BuildOvlListForSlot(RE::Actor* a_Actor, int a_NumOfSlots, const std::string& a_OvlName, std::vector<RMOverlay>* a_OvlVec){
@@ -132,22 +135,24 @@ namespace OverlaySaver {
 			return;
 		}
 
+		const bool Fem = static_cast<bool>(a_Actor->GetActorBase()->GetSex());
+
 		for (int i = 0; i < a_NumOfSlots; i++) {
 			std::string NodeName = fmt::format(fmt::runtime(a_OvlName), i);
 
-			std::string NodeDataTextureStr = GetNodeOverrideString(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderTexture), 0).c_str();
+			std::string NodeDataTextureStr = GetNodeOverrideString(a_Actor, Fem, NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderTexture), 0).c_str();
 
 			if (NodeDataTextureStr.empty() || ContainsInvariantStr(NodeDataTextureStr, R"(\default.dds)")) {
 				continue;
 			}
 
-			float _Alpha = GetNodeOverrideFloat(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderAlpha), -1);
-			uint32_t _Color = GetNodeOverrideInt(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderTintColor), -1);
+			float _Alpha = GetNodeOverrideFloat(a_Actor, Fem, NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderAlpha), -1);
+			uint32_t _Color = GetNodeOverrideInt(a_Actor, Fem, NodeName.c_str(), static_cast<int>(OverlayLayers::kShaderTintColor), -1);
 			a_OvlVec->emplace_back(_Alpha, _Color, static_cast<uint32_t>(NodeDataTextureStr.length()), NodeDataTextureStr);
 			
 		}
 
-		logger::debug("Stored {} Ovls For BodyPart {} On Actor {}", a_OvlVec->size(), a_OvlName,a_Actor->GetDisplayFullName());
+		logger::info("Stored {} Ovls For BodyPart {} On Actor {}", a_OvlVec->size(), a_OvlName,a_Actor->GetDisplayFullName());
 
 	}
 
@@ -175,11 +180,11 @@ namespace OverlaySaver {
 		BuildOvlListForSlot(a_Actor, iBody, sBody, &ActorData->vBody);
 		BuildOvlListForSlot(a_Actor, iFeet, sFeet, &ActorData->vFeet);
 
-		logger::debug("GetOverlaysFromRM() Completed on Actor {}", a_Actor->GetDisplayFullName());
-		logger::debug("{} Head Overlays Added", ActorData->vHead.size());
-		logger::debug("{} Hand Overlays Added", ActorData->vHand.size());
-		logger::debug("{} Body Overlays Added", ActorData->vBody.size());
-		logger::debug("{} Feet Overlays Added", ActorData->vFeet.size());
+		logger::info("GetOverlaysFromRM() Completed on Actor {}", a_Actor->GetDisplayFullName());
+		logger::info("{} Head Overlays Added", ActorData->vHead.size());
+		logger::info("{} Hand Overlays Added", ActorData->vHand.size());
+		logger::info("{} Body Overlays Added", ActorData->vBody.size());
+		logger::info("{} Feet Overlays Added", ActorData->vFeet.size());
 
 	}
 
@@ -187,7 +192,7 @@ namespace OverlaySaver {
 
 
 		if (a_OvlVec->empty()) {
-			logger::debug("Vector was empty, Skipping");
+			logger::info("Vector was empty, Skipping");
 			return;
 		}
 
@@ -195,27 +200,35 @@ namespace OverlaySaver {
 
 		for (int i = 0; i < NumOfSlots; i++) {
 			std::string NodeName = fmt::format(fmt::runtime(a_OvlName),i);
+			const bool Fem = static_cast<bool>(a_Actor->GetActorBase()->GetSex());
+			OverrideInterface->RemoveAllNodeOverridesByNode(a_Actor, Fem, NodeName.c_str());
 
 			try {
 				Variant VariantStr(a_OvlVec->at(i).TexturePath.c_str());
-				OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTexture), 0, VariantStr);
+				OverrideInterface->AddNodeOverride(a_Actor, Fem, NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTexture), 0, VariantStr);
 			}
-			catch (const std::exception&) {}
+			catch (const std::exception&) {
+				logger::error("ExceptionTxt");
+			}
 
 			try {
 				Variant VariantF(a_OvlVec->at(i).Alpha);
-				OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderAlpha), 0, VariantF);
+				OverrideInterface->AddNodeOverride(a_Actor, Fem, NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderAlpha), -1, VariantF);
 			}
-			catch (const std::exception&) {}
+			catch (const std::exception&) {
+				logger::error("ExceptionAlpha");
+			}
 
 			try {
 				Variant VariantI(static_cast<int32_t>(a_OvlVec->at(i).Color));
-				OverrideInterface->AddNodeOverride(a_Actor, static_cast<bool>(a_Actor->GetActorBase()->GetSex()), NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTintColor), 0, VariantI);
+				OverrideInterface->AddNodeOverride(a_Actor, Fem, NodeName.c_str(), static_cast<uint16_t>(OverlayLayers::kShaderTintColor), -1, VariantI);
 			}
-			catch (const std::exception&) {}
+			catch (const std::exception&) {
+				logger::error("ExceptionColor");
+			}
 		}
 
-		logger::debug("Appied {} Ovls From Persistent Storage to {} on BodyPart {}", NumOfSlots, a_Actor->GetDisplayFullName(), a_OvlName);
+		logger::info("Appied {} Ovls From Persistent Storage to {} on BodyPart {}", NumOfSlots, a_Actor->GetDisplayFullName(), a_OvlName);
 
 	}
 
@@ -237,14 +250,19 @@ namespace OverlaySaver {
 		ApplyStoredOverlayOnBodyPart(a_Actor, iBody, sBody, &ActorData->vBody);
 		ApplyStoredOverlayOnBodyPart(a_Actor, iFeet, sFeet, &ActorData->vFeet);
 
-		logger::debug("ApplyOverlayFromList() On Actor {} OK", a_Actor->GetDisplayFullName());
+		logger::info("ApplyOverlayFromList() On Actor {} OK", a_Actor->GetDisplayFullName());
 
-		if (const auto& Actor3D = a_Actor->GetCurrent3D()) {
-			OverrideInterface->ApplyNodeOverrides(a_Actor, Actor3D, true);
+		if (const auto& Actor3D = a_Actor->Get3D(false)) {
+			//logger::info("3D Exists");
+
+			OverrideInterface->SetNodeProperties(a_Actor, false);
+			OverrideInterface->SetSkinProperties(a_Actor, false);
+			OverrideInterface->ApplyNodeOverrides(a_Actor, Actor3D, false);
 			a_Actor->Update3DModel();
+			//a_Actor->DoReset3D(true);
 		}
 
-		logger::debug("GetOverlaysFromRM() Has Run");
+		logger::info("ApplyOverlayFromList() Has Run");
 
 	}
 

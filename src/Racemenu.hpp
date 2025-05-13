@@ -52,10 +52,10 @@ namespace OverlaySaver {
 		static inline int iBody = 0;
 		static inline int iFeet = 0;
 
-		static constexpr const char* sHead = "[Face Ovl{}]";
-		static constexpr const char* sHand = "[Hands Ovl{}]";
-		static constexpr const char* sBody = "[Body Ovl{}]";
-		static constexpr const char* sFeet = "[Feet Ovl{}]";
+		static constexpr const char* sHead = "Face [Ovl{}]";
+		static constexpr const char* sHand = "Hands [Ovl{}]";
+		static constexpr const char* sBody = "Body [Ovl{}]";
+		static constexpr const char* sFeet = "Feet [Ovl{}]";
 
 		public:
 
