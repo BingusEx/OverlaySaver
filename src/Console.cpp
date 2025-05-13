@@ -159,7 +159,7 @@ namespace OverlaySaver {
 			if (const auto& TaretHandle = PickData.get()) {
 				if (const auto& TargetActor = skyrim_cast<Actor*>(TaretHandle)) {
 					if (Serialization::GetSingleton().GetData(TargetActor)) {
-						Racemenu::OverlayManager::ApplyOverlayFromList(TargetActor);
+						Racemenu::OverlayManager::ApplyOverlayFromList(TargetActor, true);
 						Cprint("OverlaySaver: Applied Saved {} ({:X})", TargetActor->GetDisplayFullName(), TargetActor->formID);
 					}
 				}

@@ -71,7 +71,7 @@ namespace OverlaySaver {
 		std::ranges::reverse(ActorData->vBody);
 		std::ranges::reverse(ActorData->vHand);
 
-		ApplyOverlayFromList(a_Actor);
+		ApplyOverlayFromList(a_Actor, true);
 	}
 
 	void Racemenu::OverlayManager::ClearBodyPart(RE::Actor* a_Actor, int a_numOfSlots, const std::string& a_OvlName) {
@@ -232,7 +232,7 @@ namespace OverlaySaver {
 
 	}
 
-	void Racemenu::OverlayManager::ApplyOverlayFromList(RE::Actor* a_Actor) {
+	void Racemenu::OverlayManager::ApplyOverlayFromList(RE::Actor* a_Actor, const bool a_Force) {
 
 		if (!a_Actor) {
 			//logger::error("ApplyOverlayFromList() Actor Was null");
@@ -243,6 +243,13 @@ namespace OverlaySaver {
 		if (!ActorData) {
 			//logger::error("ApplyOverlayFromList() Actor Does not exist in map");
 			return;
+		}
+
+		if (!ActorData->Applied) {
+			ActorData->Applied = true;
+			if (!a_Force) {
+				return;
+			}
 		}
 
 		ApplyStoredOverlayOnBodyPart(a_Actor, iHead, sHead, &ActorData->vHead);

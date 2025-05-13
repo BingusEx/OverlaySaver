@@ -22,6 +22,8 @@ namespace OverlaySaver {
 			std::vector<RMOverlay> vBody = {};
 			std::vector<RMOverlay> vFeet = {};
 
+			volatile bool Applied = false;
+
 			ActorRecord() = default;
 			ActorRecord(RE::Actor* actor) {}
 		};
