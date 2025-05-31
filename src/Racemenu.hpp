@@ -161,7 +161,7 @@ namespace OverlaySaver {
 			static void BuildOvlListForSlot(RE::Actor* a_Actor, int a_NumOfSlots, const std::string& a_OvlName, std::vector<RMOverlay>* a_OvlVec);
 			static void BuildOverlayList(RE::Actor* a_Actor);
 			static void ApplyStoredOverlayOnBodyPart(RE::Actor* a_Actor, int a_NumOfSlots, const std::string& a_OvlName, std::vector<RMOverlay>* a_OvlVec);
-			static void ApplyOverlayFromList(RE::Actor* a_Actor, bool a_Force = false);
+			static void ApplyOverlayFromList(RE::Actor* a_Actor, const bool a_Force = false);
 		};
 
 	};

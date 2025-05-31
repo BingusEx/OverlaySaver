@@ -50,7 +50,7 @@ SKSEPluginLoad(const LoadInterface * a_skse) {
 	InitializeSerialization();
 	ConsoleManager::InstallHook();
 	Hook::stl::install_hook<OverlaySaver::Load3D>();
-
+	spdlog::set_level(spdlog::level::err);
 	return true;
 }
 

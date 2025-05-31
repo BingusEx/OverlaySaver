@@ -245,12 +245,12 @@ namespace OverlaySaver {
 			return;
 		}
 
-		if (!ActorData->Applied) {
-			ActorData->Applied = true;
-			if (!a_Force) {
-				return;
-			}
+
+		if (ActorData->AlreadyApplied && !a_Force) {
+			return;
 		}
+
+		ActorData->AlreadyApplied = true;
 
 		ApplyStoredOverlayOnBodyPart(a_Actor, iHead, sHead, &ActorData->vHead);
 		ApplyStoredOverlayOnBodyPart(a_Actor, iHand, sHand, &ActorData->vHand);
@@ -259,15 +259,15 @@ namespace OverlaySaver {
 
 		logger::info("ApplyOverlayFromList() On Actor {} OK", a_Actor->GetDisplayFullName());
 
-		if (const auto& Actor3D = a_Actor->Get3D(false)) {
-			//logger::info("3D Exists");
+		//if (const auto& Actor3D = a_Actor->Get3D(false)) {
+		//	//logger::info("3D Exists");
 
-			OverrideInterface->SetNodeProperties(a_Actor, false);
-			OverrideInterface->SetSkinProperties(a_Actor, false);
-			OverrideInterface->ApplyNodeOverrides(a_Actor, Actor3D, false);
-			a_Actor->Update3DModel();
-			//a_Actor->DoReset3D(true);
-		}
+		//	OverrideInterface->SetNodeProperties(a_Actor, false);
+		//	OverrideInterface->SetSkinProperties(a_Actor, false);
+		//	OverrideInterface->ApplyNodeOverrides(a_Actor, Actor3D, false);
+		//	a_Actor->Update3DModel();
+		//	//a_Actor->DoReset3D(true);
+		//}
 
 		logger::info("ApplyOverlayFromList() Has Run");
 

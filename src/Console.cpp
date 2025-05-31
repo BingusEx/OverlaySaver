@@ -193,6 +193,17 @@ namespace OverlaySaver {
 		}
 	}
 
+	void ConsoleManager::CMD_Clear() {
+		if (const auto& PickData = RE::Console::GetSelectedRef()) {
+			if (const auto& TaretHandle = PickData.get()) {
+				if (const auto& TargetActor = skyrim_cast<Actor*>(TaretHandle)) {
+					Racemenu::OverlayManager::ClearOverlays(TargetActor);
+					Cprint("OverlaySaver: ClearOverlays {} ({:X})", TargetActor->GetDisplayFullName(), TargetActor->formID);
+				}
+			}
+		}
+	}
+
 	void ConsoleManager::CMD_Flip() {
 		if (const auto& PickData = RE::Console::GetSelectedRef()) {
 			if (const auto& TaretHandle = PickData.get()) {
@@ -200,6 +211,19 @@ namespace OverlaySaver {
 					if (Serialization::GetSingleton().GetData(TargetActor)) {
 						Racemenu::OverlayManager::FlipStoredOverlaysAndReapply(TargetActor);
 						Cprint("OverlaySaver: Flipped Ovl order of {} ({:X})", TargetActor->GetDisplayFullName(), TargetActor->formID);
+					}
+				}
+			}
+		}
+	}
+
+	void ConsoleManager::CMD_Reset3D() {
+		if (const auto& PickData = RE::Console::GetSelectedRef()) {
+			if (const auto& TaretHandle = PickData.get()) {
+				if (const auto& TargetActor = skyrim_cast<Actor*>(TaretHandle)) {
+					if (Serialization::GetSingleton().GetData(TargetActor)) {
+						TargetActor->DoReset3D(true);
+						TargetActor->RemoveExtraArrows3D();
 					}
 				}
 			}

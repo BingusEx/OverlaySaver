@@ -21,7 +21,9 @@ namespace OverlaySaver {
         static void CMD_ReApply();
         static void CMD_Update();
         static void CMD_Erase();
+        static void CMD_Clear();
         static void CMD_Flip();
+        static void CMD_Reset3D();
 
         public:
 
@@ -36,10 +38,12 @@ namespace OverlaySaver {
             logger::info("Loading Default Command List");
             RegisterCommand("help", CMD_Help, "Show this list");
             RegisterCommand("register", CMD_Register, "Register the current crosshair actor");
-            RegisterCommand("apply", CMD_ReApply, "apply saved ovl data");
-            RegisterCommand("update", CMD_Update, "update saved ovl data with current");
-            RegisterCommand("erase", CMD_Erase, "remove actor from cosave");
+            RegisterCommand("apply", CMD_ReApply, "Apply saved ovl data");
+            RegisterCommand("update", CMD_Update, "Update saved ovl data with current");
+            RegisterCommand("erase", CMD_Erase, "Remove actor from cosave");
             RegisterCommand("flip", CMD_Flip, "Invert the order of overlays and reapply them");
+            RegisterCommand("clear", CMD_Clear, "Clear overlays from actor but keep storage");
+            RegisterCommand("reset3d", CMD_Reset3D, "Reset3D");
 
         }
 
